@@ -1,0 +1,65 @@
+discretization_set_name = A1OUT
+discretization_ispecs = 7
+discretization_unmeasured_name = 
+discretization_unmeasured_minmax = 
+discretization_hull_name = 
+discretization_hull_minmax = 
+discretization_error = 0.02
+
+model_name = NLP_u
+model_fspecs = 9.8 
+
+maxboxes = 100
+p[0] = 0.02		200.0		0.01	2.0
+p[1] = 0.0008333333333	8.33333333333	0.01	0.0833333333333
+p[2] = 0.03333333333 	333.333333333	0.01	3.33333333333
+p_minreduction_fraction = 0.01
+
+%  For each box, the program will loop through windows attempting to make progress. 
+%  In Phase 1, the program will loop through the data m times, while overlapping windows
+%              by a fraction of p.
+%  In Phase 2, the program will loop through the data until no significant progress
+%              has been made for n loops through the entire data set, with a cap on
+%              q loops through the data.
+%  This information can be entered as follows:
+%        window_specs = p m n q
+loop_specs = 0.0 1 1 10
+
+%  Subbox option is how to process unmeasured variables. 3 options:
+%  (1) subbox_specs :     (leaving blank allows for no subboxes)
+%  (2) subbox_specs = m n (divide the m-th time step into n subboxes)
+%  (3) subbox_specs : m n (divide m unique time steps into n subboxes each)
+subbox_specs : 
+
+num_data_sets = 1
+
+% Step size used in discretization - can be a range that program chooses from
+step_size = 0.05 0.05
+
+num_files_in_set = 2
+data_file_name_0 = datafiles/nlp2.txt
+data_file_name_1 = datafiles/nlp_u2.txt
+%  Now each variable (indexing starts at 0) is specified.
+%  There are two ways:
+%  (1) Use an equal sign to specify exact lower and upper bounds that are
+%      read from the data files and/or here.
+%      e.g.    y[0] = timespec  lowerboundspec  upperboundspec   goalwidth
+%  (2) Use a colon to specify data from the files that will be processed 
+%      through tasle to give lower and upper bounds.
+%      e.g.    y[0] : timespec  dataspec  tasle_tmin   goalwidth
+%   A "spec" is of the form
+%       [file%d][col%d]{+-}%lf
+%     where 
+%       file%d, if present, specifies the file (default is "file0")
+%       col%d, if present, specifies the column in the file (default is null)
+%       %lf is a value added/subtracted to the data.
+%y[0] = file0col0  	-3.0  		4.0   	1.0
+y[0] :  file0col0  	file0col1  	0.15  	0.12
+y[1] :  file0col0  	file0col2  	0.15  	0.12
+%y[1] = file0col0	-10.0		10.0	1.0
+u[0] :  file1col0	file1col1	0.5	0.1
+% Specify the minimum reduction of a variable (with respect to its goal width)
+% that will be considered a significant reduction.
+y_minreduction_fraction = 0.25
+
+write_box_vars = no

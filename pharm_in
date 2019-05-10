@@ -1,0 +1,70 @@
+discretization_set_name = A1OUT
+discretization_ispecs = 6
+discretization_unmeasured_name = 
+discretization_unmeasured_minmax = 
+discretization_hull_name = 
+discretization_hull_minmax = 
+discretization_error = 0.10
+
+model_name = PHARM
+model_fspecs = 48.15
+
+maxboxes = 100
+p[0] = 3   	7  	0.1
+p[1] = 0.01	500	20.0
+p[2] = 0.01	100	1.0
+p[3] = 0.01	150	5.0
+p[4] = 0.01	50	1.0
+p[5] = 0.01	50	0.5
+p[6] = 0.1    	10	0.5
+p_minreduction_fraction = 0.01
+
+%  For each box, the program will loop through windows attempting to make progress. 
+%  In Phase 1, the program will loop through the data m times, while overlapping windows
+%              by a fraction of p.
+%  In Phase 2, the program will loop through the data until no significant progress
+%              has been made for n loops through the entire data set, with a cap on
+%              q loops through the data.
+%  This information can be entered as follows:
+%        window_specs = p m n q
+loop_specs = 0.5 1 1 10
+
+%  Subbox option is how to process unmeasured variables. 3 options:
+%  (1) subbox_specs :     (leaving blank allows for no subboxes)
+%  (2) subbox_specs = m n (divide the m-th time step into n subboxes)
+%  (3) subbox_specs : m n (divide m time steps into n subboxes each)
+subbox_specs =
+
+% Specify the number of data sets.
+num_data_sets = 1
+
+% Specify the number of files and their names for this data set.
+step_size = 0.15
+num_files_in_set = 2
+data_file_name_0 = datafiles/pharm_mbdb_data.txt
+data_file_name_1 = datafiles/pharm_mudu_data.txt
+%  Now each variable (indexing starts at 0) is specified.
+%  There are two ways:
+%  (1) Use an equal sign to specify exact lower and upper bounds that are
+%      read from the data files and/or here.
+%      e.g.    y[0] = timespec  lowerboundspec  upperboundspec   goalwidth
+%  (2) Use a colon to specify data from the files that will be processed 
+%      through tasle to give lower and upper bounds.
+%      e.g.    y[0] : timespec  dataspec  tasle_tmin   goalwidth
+%   A "spec" is of the form
+%       [file%d][col%d]{+-}%lf
+%     where 
+%       file%d, if present, specifies the file (default is "file0")
+%       col%d, if present, specifies the column in the file (default is null)
+%       %lf is a value added/subtracted to the data.
+y[0] : file0col0 	file0col1 	1.0 0.02
+y[1] : file0col0 	file0col2 	1.0 0.1
+y[2] : file1col0 	file1col1 	4.0 0.3
+y[3] : file1col0 	file1col2 	4.0 1.7
+
+% Specify the minimum reduction of a variable (with respect to its goal width)
+% that will be considered a significant reduction.
+y_minreduction_fraction = 0.25
+
+write_box_vars = no
+win_width = 0.2
